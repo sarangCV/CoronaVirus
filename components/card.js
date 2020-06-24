@@ -20,10 +20,11 @@ class Card extends Component {
             <Text style={ {...styles.title, ...this.props.textColor} }>{ this.props.district }</Text>
           </View>
           <View style={ {...styles.body, ...this.props.color} }>
+            
+            <Text style={ styles.bodyText1 }>active : { this.props.active }</Text>
             <View style={ styles.confirmedView }>
                 <Text style={ styles.bodyText2 }>confirmed : { this.props.confirmed }</Text><Icon name = 'md-arrow-round-up' size = {15} color = '#B71C1C' style={{marginRight: 5}}/><Text style={ styles.bodyTextNew1 }>{ this.props.deltaConfirmed }</Text>
             </View>
-            <Text style={ styles.bodyText1 }>active : { this.props.active }</Text>
             <View style={ styles.confirmedView }>
                 <Text style={ styles.bodyText3 }>recovered : { this.props.recovered }</Text><Icon name = 'md-arrow-round-up' size = {15} color = '#388E3C' style={{marginRight: 5}}/><Text style={ styles.bodyTextNew2 }>{ this.props.deltaRecovered }</Text>
             </View>
