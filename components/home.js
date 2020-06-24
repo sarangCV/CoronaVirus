@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, StyleSheet, ScrollView, Dimensions, Animated, Easing } from 'react-native';
+import { View, Text, FlatList, StyleSheet, ScrollView, Dimensions, Animated } from 'react-native';
 import Card from './card';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Ico from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -17,35 +17,24 @@ export default class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      Kerala: [],
-      Alappuzha: [],
-      AlappuzhaDelta: [],
-      Ernakulam: [],
-      ErnakulamDelta: [],
-      Idukki: [],
-      IdukkiDelta: [],
-      Kannur: [],
-      KannurDelta: [],
-      Kasaragod: [],
-      KasaragodDelta: [],
-      Kollam: [],
-      KollamDelta: [],
-      Kottayam: [],
-      KottayamDelta: [],
-      Kozhikode: [],
-      KozhikodeDelta: [],
-      Malappuram: [],
-      MalappuramDelta: [],
-      Palakkad: [],
-      PalakkadDelta: [],
-      Pathanamthitta: [],
-      PathanamthittaDelta: [],
-      Thiruvananthapuram: [],
-      ThiruvananthapuramDelta: [],
-      Thrissur: [],
-      ThrissurDelta: [],
-      Wayanad: [],
-      WayanadDelta: [],
+      kerala: [ ],
+      districtData: { Kasaragod: {delta:{}},
+                      Kannur: {delta:{}},
+                      Kozhikode: {delta:{}},
+                      Wayanad: {delta:{}},
+                      Malappuram: {delta:{}},
+                      Palakkad: {delta:{}},
+                      Thrissur: {delta:{}},
+                      Idukki: {delta:{}},
+                      Ernakulam: {delta:{}},
+                      Kottayam: {delta:{}},
+                      Alappuzha: {delta:{}},
+                      Pathanamthitta: {delta:{}},
+                      Kollam: {delta:{}},
+                      Thiruvananthapuram: {delta:{}}
+                    },
+
+
       curDate: new Date().toDateString(),
       lastupdatedtime: null,
       isLoading: true,
@@ -65,20 +54,9 @@ export default class Home extends Component {
 
    componentDidMount() {
     this.fetchData();
-    // this.setState({ isAnimate: false })
-
 }
 
 animationHandler = () => {
-  // this.position1 = new Animated.Value(100);
-  // this.opacity1 = new Animated.Value(0);
-  // this.position2 = new Animated.Value(-100);
-  // this.opacity2 = new Animated.Value(0);
-  // this.position3 = new Animated.Value(100);
-  // this.opacity3 = new Animated.Value(0);
-  // this.position4 = new Animated.Value(100);
-  // this.opacity4 = new Animated.Value(0);
-
   console.log("animation started")
 
   Animated.timing(this.state.position1, {
@@ -131,13 +109,6 @@ animationHandler = () => {
 
 }
 
-// animationHandler2 = () => {
-//   Animated.timing(this.position, {
-//     toValue: 1,
-//     duration: 2000
-//   }).start
-// }
-
   themeHandler = async () => {
     if(this.state.theme == themes.light){
       await AsyncStorage.setItem('theme', 'dark');
@@ -156,93 +127,43 @@ animationHandler = () => {
 
   }
 
-  fetchData = async () => {
-    const response = await fetch('https://api.covid19india.org/state_district_wise.json');
-    const data = await response.json();
-    const response2 = await fetch('https://api.covid19india.org/data.json');
-    const data2 = await response2.json();
-    // const Kerala = data2.statewise[19];
-    const Kerala = data2.statewise.filter((item) => {
-        return(item.state == 'Kerala')
-    });
-    const Alappuzha = data.Kerala.districtData.Alappuzha;
-    const AlappuzhaDelta = data.Kerala.districtData.Alappuzha.delta;
-    const Ernakulam = data.Kerala.districtData.Ernakulam;
-    const ErnakulamDelta = data.Kerala.districtData.Ernakulam.delta;
-    const Idukki = data.Kerala.districtData.Idukki;
-    const IdukkiDelta = data.Kerala.districtData.Idukki.delta;
-    const Kannur = data.Kerala.districtData.Kannur;
-    const KannurDelta = data.Kerala.districtData.Kannur.delta;
-    const Kasaragod = data.Kerala.districtData.Kasaragod;
-    const KasaragodDelta = data.Kerala.districtData.Kasaragod.delta;
-    const Kollam = data.Kerala.districtData.Kollam;
-    const KollamDelta = data.Kerala.districtData.Kollam.delta;
-    const Kottayam = data.Kerala.districtData.Kottayam;
-    const KottayamDelta = data.Kerala.districtData.Kottayam.delta;
-    const Kozhikode = data.Kerala.districtData.Kozhikode;
-    const KozhikodeDelta = data.Kerala.districtData.Kozhikode.delta;
-    const Malappuram = data.Kerala.districtData.Malappuram;
-    const MalappuramDelta = data.Kerala.districtData.Malappuram.delta;
-    const Palakkad = data.Kerala.districtData.Palakkad;
-    const PalakkadDelta = data.Kerala.districtData.Palakkad.delta;
-    const Pathanamthitta = data.Kerala.districtData.Pathanamthitta;
-    const PathanamthittaDelta = data.Kerala.districtData.Pathanamthitta.delta;
-    const Thiruvananthapuram = data.Kerala.districtData.Thiruvananthapuram;
-    const ThiruvananthapuramDelta = data.Kerala.districtData.Thiruvananthapuram.delta;
-    const Thrissur = data.Kerala.districtData.Thrissur;
-    const ThrissurDelta = data.Kerala.districtData.Thrissur.delta;
-    const Wayanad = data.Kerala.districtData.Wayanad;
-    const WayanadDelta = data.Kerala.districtData.Wayanad.delta;
+  fetchData = async ()  => {
     const theme = await AsyncStorage.getItem('theme')
-    console.log(theme)
-    if (theme == 'light') {
+
+      if (theme == 'light') {
+            this.setState({
+              theme: themes.light,
+            })
+          }
+          else {
+            this.setState({
+              theme: themes.dark,
+            })
+          }
+
+    fetch('https://api.covid19india.org/state_district_wise.json')
+    .then(response => response.json())
+    .then((responseJson) => {
       this.setState({
-        theme: themes.light,
+        districtData: responseJson.Kerala.districtData
       })
-    }
-    else {
+    })
+
+    fetch('https://api.covid19india.org/data.json')
+    .then(response => response.json())
+    .then((responseJson) => {
+      const filteredData = responseJson.statewise.filter((item) => {
+        return(item.state === 'Kerala')
+      })
+      
       this.setState({
-        theme: themes.dark,
+        kerala: filteredData[0],
+        lastupdatedtime: moment(`${filteredData[0].lastupdatedtime}`, "DD/MM/YYYY hh:mm:ss").utcOffset("+05:30").fromNow(),
+        isLoading: false
       })
-    }
-    
-
-    this.setState({
-      Kerala: Kerala,
-      Alappuzha: Alappuzha,
-      AlappuzhaDelta: AlappuzhaDelta,
-      Ernakulam: Ernakulam,
-      ErnakulamDelta: ErnakulamDelta,
-      Idukki: Idukki,
-      IdukkiDelta: IdukkiDelta,
-      Kannur: Kannur,
-      KannurDelta: KannurDelta,
-      Kasaragod: Kasaragod,
-      KasaragodDelta: KasaragodDelta,
-      Kollam: Kollam,
-      KollamDelta: KollamDelta,
-      Kottayam: Kottayam,
-      KottayamDelta: KottayamDelta,
-      Kozhikode: Kozhikode,
-      KozhikodeDelta: KozhikodeDelta,
-      Malappuram: Malappuram,
-      MalappuramDelta: MalappuramDelta,
-      Palakkad: Palakkad,
-      PalakkadDelta: PalakkadDelta,
-      Pathanamthitta: Pathanamthitta,
-      PathanamthittaDelta: PathanamthittaDelta,
-      Thiruvananthapuram: Thiruvananthapuram,
-      ThiruvananthapuramDelta: ThiruvananthapuramDelta,
-      Thrissur: Thrissur,
-      ThrissurDelta: ThrissurDelta,
-      Wayanad: Wayanad,
-      WayanadDelta: WayanadDelta,
-      lastupdatedtime: moment(`${Kerala[0].lastupdatedtime}`, "DD/MM/YYYY hh:mm:ss").utcOffset("+05:30").fromNow(),
-      isLoading: false,
-
-      })
-
-
+      console.log(this.state.kerala)
+    })
+    await AsyncStorage.removeItem('theme')
   }
 
   render() {
@@ -274,16 +195,16 @@ animationHandler = () => {
                         <Ico name = 'theme-light-dark' size = {30} style={{marginRight: 5}} color = {`${this.state.theme.themeIconColor}`} onPress = { this.themeHandler }/>
                   </View>
                   <Animated.View style={ {...styles.totalActiveView, top: this.state.position1, opacity: this.state.opacity1} } >
-                      <Text style={ styles.totalActiveText }>Active : {this.state.Kerala[0].active}</Text>
+                      <Text style={ styles.totalActiveText }>Active : {this.state.kerala.active}</Text>
                   </Animated.View>
                   <Animated.View style={ {...styles.totalActiveView, top: this.state.position2, opacity: this.state.opacity2} }>
-                      <Text style={ styles.totalConfirmedText }>Confirmed : {this.state.Kerala[0].confirmed}</Text><Icon name = 'md-arrow-round-up' size = {22} color = '#ff073a' style={{marginRight: 5}}/><Text style={ styles.totalConfirmedTextNew }>{ this.state.Kerala[0].deltaconfirmed}</Text>
+                      <Text style={ styles.totalConfirmedText }>Confirmed : {this.state.kerala.confirmed}</Text><Icon name = 'md-arrow-round-up' size = {22} color = '#ff073a' style={{marginRight: 5}}/><Text style={ styles.totalConfirmedTextNew }>{ this.state.kerala.deltaconfirmed}</Text>
                   </Animated.View>
                   <Animated.View style={ {...styles.totalActiveView, top: this.state.position3, opacity: this.state.opacity3} }>
-                      <Text style={ styles.totalRecoveredText }>Recovered : {this.state.Kerala[0].recovered}</Text><Icon name = 'md-arrow-round-up' size = {22} color = '#33691E' style={{marginRight: 5}}/><Text style={ styles.totalRecoveredTextNew }>{ this.state.Kerala[0].deltarecovered}</Text>
+                      <Text style={ styles.totalRecoveredText }>Recovered : {this.state.kerala.recovered}</Text><Icon name = 'md-arrow-round-up' size = {22} color = '#33691E' style={{marginRight: 5}}/><Text style={ styles.totalRecoveredTextNew }>{ this.state.kerala.deltarecovered}</Text>
                   </Animated.View>
                   <Animated.View style={ {...styles.totalActiveView, top: this.state.position4, opacity: this.state.opacity4} }>
-                      <Text style={ styles.totalDeceasedText }>Deceased : {this.state.Kerala[0].deaths}</Text><Icon name = 'md-arrow-round-up' size = {22} color = '#455A64' style={{marginRight: 5}}/><Text style={ styles.totalDeceasedTextNew }>{ this.state.Kerala[0].deltadeaths}</Text>
+                      <Text style={ styles.totalDeceasedText }>Deceased : {this.state.kerala.deaths}</Text><Icon name = 'md-arrow-round-up' size = {22} color = '#6d8089' style={{marginRight: 5}}/><Text style={ styles.totalDeceasedTextNew }>{ this.state.kerala.deltadeaths}</Text>
                   </Animated.View>
                   <View style={ styles.totalActiveView }>
                     <Text style={ styles.lastupdatedtime }>Last updated time : {this.state.lastupdatedtime} </Text>
@@ -292,168 +213,169 @@ animationHandler = () => {
 
                 <Card
                 district = "Kasaragod"
-                active = { this.state.Kasaragod.active }
-                confirmed = { this.state.Kasaragod.confirmed }
-                recovered = { this.state.Kasaragod.recovered }
-                deceased = { this.state.Kasaragod.deceased }
-                deltaConfirmed = { this.state.KasaragodDelta.confirmed }
-                deltaRecovered = { this.state.KasaragodDelta.recovered }
-                deltaDeceased = { this.state.KasaragodDelta.deceased }
+                active = { this.state.districtData.Kasaragod.active }
+                confirmed = { this.state.districtData.Kasaragod.confirmed }
+                recovered = { this.state.districtData.Kasaragod.recovered }
+                deceased = { this.state.districtData.Kasaragod.deceased }
+                deltaConfirmed = { this.state.districtData.Kasaragod.delta.confirmed }
+                deltaRecovered = { this.state.districtData.Kasaragod.delta.recovered }
+                deltaDeceased = { this.state.districtData.Kasaragod.delta.deceased }
                 color = {{backgroundColor: `${this.state.theme.cardColor}`}}
-                textColor = {{color: `${this.state.theme.accent}`}}/>
+                textColor = {{color: `${this.state.theme.accent}`}}
+                />
 
                 <Card
                 district = "Kannur"
-                active = { this.state.Kannur.active }
-                confirmed = { this.state.Kannur.confirmed }
-                recovered = { this.state.Kannur.recovered }
-                deceased = { this.state.Kannur.deceased }
-                deltaConfirmed = { this.state.KannurDelta.confirmed }
-                deltaRecovered = { this.state.KannurDelta.recovered }
-                deltaDeceased = { this.state.KannurDelta.deceased }
+                active = { this.state.districtData.Kannur.active }
+                confirmed = { this.state.districtData.Kannur.confirmed }
+                recovered = { this.state.districtData.Kannur.recovered }
+                deceased = { this.state.districtData.Kannur.deceased }
+                deltaConfirmed = { this.state.districtData.Kannur.delta.confirmed }
+                deltaRecovered = { this.state.districtData.Kannur.delta.recovered }
+                deltaDeceased = { this.state.districtData.Kannur.delta.deceased }
                 color = {{backgroundColor: `${this.state.theme.cardColor}`}}
                 textColor = {{color: `${this.state.theme.accent}`}}/>
 
                 <Card
                 district = "Kozhikode"
-                active = { this.state.Kozhikode.active }
-                confirmed = { this.state.Kozhikode.confirmed }
-                recovered = { this.state.Kozhikode.recovered }
-                deceased = { this.state.Kozhikode.deceased }
-                deltaConfirmed = { this.state.KozhikodeDelta.confirmed }
-                deltaRecovered = { this.state.KozhikodeDelta.recovered }
-                deltaDeceased = { this.state.KozhikodeDelta.deceased }
+                active = { this.state.districtData.Kozhikode.active }
+                confirmed = { this.state.districtData.Kozhikode.confirmed }
+                recovered = { this.state.districtData.Kozhikode.recovered }
+                deceased = { this.state.districtData.Kozhikode.deceased }
+                deltaConfirmed = { this.state.districtData.Kozhikode.delta.confirmed }
+                deltaRecovered = { this.state.districtData.Kozhikode.delta.recovered }
+                deltaDeceased = { this.state.districtData.Kozhikode.delta.deceased }
                 color = {{backgroundColor: `${this.state.theme.cardColor}`}}
                 textColor = {{color: `${this.state.theme.accent}`}}/>
 
                 <Card
                 district = "Wayanad"
-                active = { this.state.Wayanad.active }
-                confirmed = { this.state.Wayanad.confirmed }
-                recovered = { this.state.Wayanad.recovered }
-                deceased = { this.state.Wayanad.deceased }
-                deltaConfirmed = { this.state.WayanadDelta.confirmed }
-                deltaRecovered = { this.state.WayanadDelta.recovered }
-                deltaDeceased = { this.state.WayanadDelta.deceased }
+                active = { this.state.districtData.Wayanad.active }
+                confirmed = { this.state.districtData.Wayanad.confirmed }
+                recovered = { this.state.districtData.Wayanad.recovered }
+                deceased = { this.state.districtData.Wayanad.deceased }
+                deltaConfirmed = { this.state.districtData.Wayanad.delta.confirmed }
+                deltaRecovered = { this.state.districtData.Wayanad.delta.recovered }
+                deltaDeceased = { this.state.districtData.Wayanad.delta.deceased }
                 color = {{backgroundColor: `${this.state.theme.cardColor}`}}
                 textColor = {{color: `${this.state.theme.accent}`}}/>
 
                 <Card
                 district = "Malappuram"
-                active = { this.state.Malappuram.active }
-                confirmed = { this.state.Malappuram.confirmed }
-                recovered = { this.state.Malappuram.recovered }
-                deceased = { this.state.Malappuram.deceased }
-                deltaConfirmed = { this.state.MalappuramDelta.confirmed }
-                deltaRecovered = { this.state.MalappuramDelta.recovered }
-                deltaDeceased = { this.state.MalappuramDelta.deceased }
+                active = { this.state.districtData.Malappuram.active }
+                confirmed = { this.state.districtData.Malappuram.confirmed }
+                recovered = { this.state.districtData.Malappuram.recovered }
+                deceased = { this.state.districtData.Malappuram.deceased }
+                deltaConfirmed = { this.state.districtData.Malappuram.delta.confirmed }
+                deltaRecovered = { this.state.districtData.Malappuram.delta.recovered }
+                deltaDeceased = { this.state.districtData.Malappuram.delta.deceased }
                 color = {{backgroundColor: `${this.state.theme.cardColor}`}}
                 textColor = {{color: `${this.state.theme.accent}`}}/>
 
                 <Card
                 district = "Palakkad"
-                active = { this.state.Palakkad.active }
-                confirmed = { this.state.Palakkad.confirmed }
-                recovered = { this.state.Palakkad.recovered }
-                deceased = { this.state.Palakkad.deceased }
-                deltaConfirmed = { this.state.PalakkadDelta.confirmed }
-                deltaRecovered = { this.state.PalakkadDelta.recovered }
-                deltaDeceased = { this.state.PalakkadDelta.deceased }
+                active = { this.state.districtData.Palakkad.active }
+                confirmed = { this.state.districtData.Palakkad.confirmed }
+                recovered = { this.state.districtData.Palakkad.recovered }
+                deceased = { this.state.districtData.Palakkad.deceased }
+                deltaConfirmed = { this.state.districtData.Palakkad.delta.confirmed }
+                deltaRecovered = { this.state.districtData.Palakkad.delta.recovered }
+                deltaDeceased = { this.state.districtData.Palakkad.delta.deceased }
                 color = {{backgroundColor: `${this.state.theme.cardColor}`}}
                 textColor = {{color: `${this.state.theme.accent}`}}/>
 
                 <Card
                 district = "Thrissur"
-                active = { this.state.Thrissur.active }
-                confirmed = { this.state.Thrissur.confirmed }
-                recovered = { this.state.Thrissur.recovered }
-                deceased = { this.state.Thrissur.deceased }
-                deltaConfirmed = { this.state.ThrissurDelta.confirmed }
-                deltaRecovered = { this.state.ThrissurDelta.recovered }
-                deltaDeceased = { this.state.ThrissurDelta.deceased }
+                active = { this.state.districtData.Thrissur.active }
+                confirmed = { this.state.districtData.Thrissur.confirmed }
+                recovered = { this.state.districtData.Thrissur.recovered }
+                deceased = { this.state.districtData.Thrissur.deceased }
+                deltaConfirmed = { this.state.districtData.Thrissur.delta.confirmed }
+                deltaRecovered = { this.state.districtData.Thrissur.delta.recovered }
+                deltaDeceased = { this.state.districtData.Thrissur.delta.deceased }
                 color = {{backgroundColor: `${this.state.theme.cardColor}`}}
                 textColor = {{color: `${this.state.theme.accent}`}}/>
 
                 <Card
                 district = "Idukki"
-                active = { this.state.Idukki.active }
-                confirmed = { this.state.Idukki.confirmed }
-                recovered = { this.state.Idukki.recovered }
-                deceased = { this.state.Idukki.deceased }
-                deltaConfirmed = { this.state.IdukkiDelta.confirmed }
-                deltaRecovered = { this.state.IdukkiDelta.recovered }
-                deltaDeceased = { this.state.IdukkiDelta.deceased }
+                active = { this.state.districtData.Idukki.active }
+                confirmed = { this.state.districtData.Idukki.confirmed }
+                recovered = { this.state.districtData.Idukki.recovered }
+                deceased = { this.state.districtData.Idukki.deceased }
+                deltaConfirmed = { this.state.districtData.Idukki.delta.confirmed }
+                deltaRecovered = { this.state.districtData.Idukki.delta.recovered }
+                deltaDeceased = { this.state.districtData.Idukki.delta.deceased }
                 color = {{backgroundColor: `${this.state.theme.cardColor}`}}
                 textColor = {{color: `${this.state.theme.accent}`}}/>
 
                 <Card
                 district = "Ernakulam"
-                active = { this.state.Ernakulam.active }
-                confirmed = { this.state.Ernakulam.confirmed }
-                recovered = { this.state.Ernakulam.recovered }
-                deceased = { this.state.Ernakulam.deceased }
-                deltaConfirmed = { this.state.ErnakulamDelta.confirmed }
-                deltaRecovered = { this.state.ErnakulamDelta.recovered }
-                deltaDeceased = { this.state.ErnakulamDelta.deceased }
+                active = { this.state.districtData.Ernakulam.active }
+                confirmed = { this.state.districtData.Ernakulam.confirmed }
+                recovered = { this.state.districtData.Ernakulam.recovered }
+                deceased = { this.state.districtData.Ernakulam.deceased }
+                deltaConfirmed = { this.state.districtData.Ernakulam.delta.confirmed }
+                deltaRecovered = { this.state.districtData.Ernakulam.delta.recovered }
+                deltaDeceased = { this.state.districtData.Ernakulam.delta.deceased }
                 color = {{backgroundColor: `${this.state.theme.cardColor}`}}
                 textColor = {{color: `${this.state.theme.accent}`}}/>
                 <Card
                 district = "Kottayam"
-                active = { this.state.Kottayam.active }
-                confirmed = { this.state.Kottayam.confirmed }
-                recovered = { this.state.Kottayam.recovered }
-                deceased = { this.state.Kottayam.deceased }
-                deltaConfirmed = { this.state.KottayamDelta.confirmed }
-                deltaRecovered = { this.state.KottayamDelta.recovered }
-                deltaDeceased = { this.state.KottayamDelta.deceased }
+                active = { this.state.districtData.Kottayam.active }
+                confirmed = { this.state.districtData.Kottayam.confirmed }
+                recovered = { this.state.districtData.Kottayam.recovered }
+                deceased = { this.state.districtData.Kottayam.deceased }
+                deltaConfirmed = { this.state.districtData.Kottayam.delta.confirmed }
+                deltaRecovered = { this.state.districtData.Kottayam.delta.recovered }
+                deltaDeceased = { this.state.districtData.Kottayam.delta.deceased }
                 color = {{backgroundColor: `${this.state.theme.cardColor}`}}
                 textColor = {{color: `${this.state.theme.accent}`}}/>
 
                 <Card
                 district = "Alappuzha"
-                active = { this.state.Alappuzha.active }
-                confirmed = { this.state.Alappuzha.confirmed }
-                recovered = { this.state.Alappuzha.recovered }
-                deceased = { this.state.Alappuzha.deceased }
-                deltaConfirmed = { this.state.AlappuzhaDelta.confirmed }
-                deltaRecovered = { this.state.AlappuzhaDelta.recovered }
-                deltaDeceased = { this.state.AlappuzhaDelta.deceased }
+                active = { this.state.districtData.Alappuzha.active }
+                confirmed = { this.state.districtData.Alappuzha.confirmed }
+                recovered = { this.state.districtData.Alappuzha.recovered }
+                deceased = { this.state.districtData.Alappuzha.deceased }
+                deltaConfirmed = { this.state.districtData.Alappuzha.delta.confirmed }
+                deltaRecovered = { this.state.districtData.Alappuzha.delta.recovered }
+                deltaDeceased = { this.state.districtData.Alappuzha.delta.deceased }
                 color = {{backgroundColor: `${this.state.theme.cardColor}`}}
                 textColor = {{color: `${this.state.theme.accent}`}}/>
 
                 <Card
                 district = "Pathanamthitta"
-                active = { this.state.Pathanamthitta.active }
-                confirmed = { this.state.Pathanamthitta.confirmed }
-                recovered = { this.state.Pathanamthitta.recovered }
-                deceased = { this.state.Pathanamthitta.deceased }
-                deltaConfirmed = { this.state.PathanamthittaDelta.confirmed }
-                deltaRecovered = { this.state.PathanamthittaDelta.recovered }
-                deltaDeceased = { this.state.PathanamthittaDelta.deceased }
+                active = { this.state.districtData.Pathanamthitta.active }
+                confirmed = { this.state.districtData.Pathanamthitta.confirmed }
+                recovered = { this.state.districtData.Pathanamthitta.recovered }
+                deceased = { this.state.districtData.Pathanamthitta.deceased }
+                deltaConfirmed = { this.state.districtData.Pathanamthitta.delta.confirmed }
+                deltaRecovered = { this.state.districtData.Pathanamthitta.delta.recovered }
+                deltaDeceased = { this.state.districtData.Pathanamthitta.delta.deceased }
                 color = {{backgroundColor: `${this.state.theme.cardColor}`}}
                 textColor = {{color: `${this.state.theme.accent}`}}/>
 
                 <Card
                 district = "Kollam"
-                active = { this.state.Kollam.active }
-                confirmed = { this.state.Kollam.confirmed }
-                recovered = { this.state.Kollam.recovered }
-                deceased = { this.state.Kollam.deceased }
-                deltaConfirmed = { this.state.KollamDelta.confirmed }
-                deltaRecovered = { this.state.KollamDelta.recovered }
-                deltaDeceased = { this.state.KollamDelta.deceased }
+                active = { this.state.districtData.Kollam.active }
+                confirmed = { this.state.districtData.Kollam.confirmed }
+                recovered = { this.state.districtData.Kollam.recovered }
+                deceased = { this.state.districtData.Kollam.deceased }
+                deltaConfirmed = { this.state.districtData.Kollam.delta.confirmed }
+                deltaRecovered = { this.state.districtData.Kollam.delta.recovered }
+                deltaDeceased = { this.state.districtData.Kollam.delta.deceased }
                 color = {{backgroundColor: `${this.state.theme.cardColor}`}}
                 textColor = {{color: `${this.state.theme.accent}`}}/>
 
                 <Card
                 district = "Thiruvananthapuram"
-                active = { this.state.Thiruvananthapuram.active }
-                confirmed = { this.state.Thiruvananthapuram.confirmed }
-                recovered = { this.state.Thiruvananthapuram.recovered }
-                deceased = { this.state.Thiruvananthapuram.deceased }
-                deltaConfirmed = { this.state.ThiruvananthapuramDelta.confirmed }
-                deltaRecovered = { this.state.ThiruvananthapuramDelta.recovered }
-                deltaDeceased = { this.state.ThiruvananthapuramDelta.deceased }
+                active = { this.state.districtData.Thiruvananthapuram.active }
+                confirmed = { this.state.districtData.Thiruvananthapuram.confirmed }
+                recovered = { this.state.districtData.Thiruvananthapuram.recovered }
+                deceased = { this.state.districtData.Thiruvananthapuram.deceased }
+                deltaConfirmed = { this.state.districtData.Thiruvananthapuram.delta.confirmed }
+                deltaRecovered = { this.state.districtData.Thiruvananthapuram.delta.recovered }
+                deltaDeceased = { this.state.districtData.Thiruvananthapuram.delta.deceased }
                 color = {{backgroundColor: `${this.state.theme.cardColor}`}}
                 textColor = {{color: `${this.state.theme.accent}`}}/>
                 
@@ -536,7 +458,7 @@ animationHandler = () => {
   totalDeceasedText: {
     fontSize: width*0.075,
     fontFamily: 'LexendDeca-Regular',
-    color: '#455A64',
+    color: '#6d8089',
     marginRight: 5
   },
   totalConfirmedTextNew: {
@@ -554,7 +476,7 @@ animationHandler = () => {
   totalDeceasedTextNew: {
     fontSize: width*0.045,
     fontFamily: 'OpenSans-Regular',
-    color: '#455A64',
+    color: '#6d8089',
     marginRight: 5
   },
   lastupdatedtime: {
