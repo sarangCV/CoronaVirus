@@ -15,7 +15,7 @@
     "@react-navigation/material-bottom-tabs": "^5.2.9",
     "@react-navigation/native": "^5.5.0",
     "moment": "^2.26.0",
-    "moment-timezone": "^0.5.31",
+    "moment-timezone": "^0.5.35",
     "react": "16.11.0",
     "react-moment": "^0.9.7",
     "react-native": "0.62.2",
